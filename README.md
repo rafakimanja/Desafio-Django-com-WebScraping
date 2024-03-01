@@ -19,4 +19,8 @@ Para realizar as tarefas propostas no desafio utilizei:
 
 ### Utilização
 
-Não foi criada nenhuma restrição para a utilização do programa, basta clonar o repositório para a sua máquina e rodar através do do comando padrão do Django 'python.exe manage.py runserver'
+Não foi criada nenhuma restrição para a utilização do programa, basta clonar o repositório para a sua máquina 
+`git clone https://github.com/rafakimanja/Desafio-Django-com-WebScraping.git`
+
+E rodar o servido através do do comando padrão do Django 
+`python.exe manage.py runserver`
