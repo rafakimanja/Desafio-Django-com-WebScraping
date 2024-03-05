@@ -43,18 +43,14 @@ def roda_script(request):
             for c in range(1, 11): #loop para os 10 itens de licitações da página
 
                 list_itens = []
-                licitacoes = []
-                bd_itens = []
 
                 valores = ref.extrair_valores(editais[c-1].get_text())
 
                 valores["Modalidade de Contratação"] = ref.modifica_modalidade(valores)
 
-                licitacoes.append(valores.copy())
-                valores.clear()
-
                 #sando no banco de dados
                 nova_licitacao = Licitacao(descricao=valores['Objeto'], modalidade=valores['Modalidade de Contratação'], comprador=(valores['Órgão']+' | '+valores['Local']))
+                valores.clear()
                 nova_licitacao.save()
 
                 sleep(2)
@@ -96,8 +92,6 @@ def roda_script(request):
                         list_itens = ref.refatora_dinheiro(list_itens)
 
                         # formatando os dados em um dicionario e atribui os dados em uma lista
-                        #bd_itens.append(ref.extrair_valores_itens(list_itens))
-                        
                         
                         controle = 0
                         for i, item in enumerate(list_itens):
@@ -146,11 +140,28 @@ def roda_script(request):
                     list_itens = ref.refatora_dinheiro(list_itens)
 
                     #formatando os dados em um dicionario e atribui os dados em uma lista
-                    bd_itens.append(ref.extrair_valores_itens(list_itens))
-
-                # atribuindo os dados ao database
-                database.append(licitacoes[:])
-                database.append(bd_itens[:])
+                    controle = 0
+                    for i, item in enumerate(list_itens):
+                        dados_itens = {}
+                        match controle:
+                            case 0:
+                                dados_itens['numero'] = item
+                                controle += 1
+                            case 1:
+                                dados_itens['descricao'] = item
+                                controle += 1
+                            case 2:
+                                dados_itens['quantidade'] = item
+                                controle += 1
+                            case 3:
+                                dados_itens['valor_unitario'] = item
+                                controle += 1
+                            case 4:
+                                dados_itens['valor'] = item
+                                controle = 0
+                        
+                        novo_item = Itens(descricao=dados_itens['descricao'], unidade='', quantidade=dados_itens['quantidade'], valor=dados_itens['valor'], licitacao=nova_licitacao)
+                        novo_item.save()
 
                 driver.back()
 
@@ -158,10 +169,3 @@ def roda_script(request):
             driver.execute_script('arguments[0].click();', troca_pagina)
             sleep(2)
 
-        for i, objeto in enumerate(database):
-            if i%2 == 0:
-                print(f'{i}°In. | Licitação: {objeto}')
-            else:
-                print(f'{i}°In. | Itens pedido: {objeto}')
-
-            return render(request, 'index.html')
