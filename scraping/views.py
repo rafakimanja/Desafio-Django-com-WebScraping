@@ -48,10 +48,10 @@ def roda_script(request):
 
                 valores["Modalidade de Contratação"] = ref.modifica_modalidade(valores)
 
-                #sando no banco de dados
+                #salvando no banco de dados
                 nova_licitacao = Licitacao(descricao=valores['Objeto'], modalidade=valores['Modalidade de Contratação'], comprador=(valores['Órgão']+' | '+valores['Local']))
-                valores.clear()
                 nova_licitacao.save()
+                valores.clear()
 
                 sleep(2)
 
@@ -92,7 +92,6 @@ def roda_script(request):
                         list_itens = ref.refatora_dinheiro(list_itens)
 
                         # formatando os dados em um dicionario e atribui os dados em uma lista
-                        
                         controle = 0
                         for i, item in enumerate(list_itens):
                             dados_itens = {}
@@ -107,13 +106,11 @@ def roda_script(request):
                                     dados_itens['quantidade'] = item
                                     controle += 1
                                 case 3:
-                                    dados_itens['valor_unitario'] = item
                                     controle += 1
                                 case 4:
                                     dados_itens['valor'] = item
                                     controle = 0
-                            
-                            
+
                             novo_item = Itens(descricao=dados_itens['descricao'], unidade='', quantidade=dados_itens['quantidade'], valor=dados_itens['valor'], licitacao=nova_licitacao)
                             novo_item.save()
 
@@ -154,14 +151,15 @@ def roda_script(request):
                                 dados_itens['quantidade'] = item
                                 controle += 1
                             case 3:
-                                dados_itens['valor_unitario'] = item
                                 controle += 1
                             case 4:
                                 dados_itens['valor'] = item
                                 controle = 0
-                        
+
                         novo_item = Itens(descricao=dados_itens['descricao'], unidade='', quantidade=dados_itens['quantidade'], valor=dados_itens['valor'], licitacao=nova_licitacao)
                         novo_item.save()
+
+                        
 
                 driver.back()
 
